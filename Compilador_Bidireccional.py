@@ -2,6 +2,9 @@
 
 
 
+import re
+
+
 def Rtipe_separator():
 
     lista_bin.append(binstr[0:5])
@@ -48,12 +51,46 @@ def Rtipe_Func():
 
     return inst
 
-inicial = "0x00851020"
+def Itipe_Func():
+    
+    inst = ""    
+    inst = inst + list_JandI_funct[int(lista_bin[0], 2)]
+    
+    if (inst == "lui "):
+        
+        inst = inst + register_list[int(lista_bin[2], 2)] + ", " + hex(int(lista_bin[3], 2))
+        
+        
+        # ll lw lbu lhu sb sc sh sw lwc1 ldc1 swc1 sdc1
+    elif (list_JandI_funct.index(inst) > 31):
+        
+        inst = inst + register_list[int(lista_bin[2], 2)] + ", " + hex(int(lista_bin[3], 2)) + "(" + register_list[int(lista_bin[1], 2)] + ")"
+        
+    elif ((list_JandI_funct.index(inst) > 7) and (list_JandI_funct.index(inst) < 15)):
+        
+        inst = inst + register_list[int(lista_bin[2], 2)] + ", " + register_list[int(lista_bin[1], 2)] + ", " + hex(int(lista_bin[3], 2))
+        
+    # elif ((list_JandI_funct.index(inst) > 3) and (list_JandI_funct.index(inst) < 8)): REQUERIMOS BTA 
+        
+        #inst = inst + register_list[int(lista_bin[2], 2)] + ", " + register_list[int(lista_bin[1], 2)] + ", " + hex(int(lista_bin[3], 2))
+        
+    return inst
+        
+        
+    
 
+inicial = "0xad49fff9"
+
+## 111000
 lista_bin = []
 
-list_Rfunct = ["sll ", "", "srl ", "sra ", "", "", "", "", "jr ", "", "", "", "", "", "", "", "mfhi ", "", "mflo ", "", "", "", "",
-               "", "mult ", "multu ", "div ", "divu ", "", "", "", "", "add ", "addu ", "sub ", "subu ", "and ", "or ", "", "nor ", "", "", "slt ", "sltu "]
+list_Rfunct = ["sll ", "", "srl ", "sra ", "sllv ", "", "srlv ", "srav ", "jr ", "jalr ", "movz ", "movn ", "syscall ", "break ", "", "sync ", "mfhi ", "mthi ",
+               "mflo ", "mtlo ", "", "", "", "", "mult ", "multu ", "div ", "divu ", "", "", "", "", "add ", "addu ", "sub ", "subu ", "and ", "or ", "xor ", "nor "
+               , "", "", "slt ", "sltu ", "", "", "", "", "tge ", "tgeu ", "tlt ", "tltu ", "teq ", "", "tne "]
+
+list_JandI_funct = ["", "", "j ", "jal ", "beq ", "bne ", "blez ", "bgtz ", "addi ", "addiu ", "slti ", "sltiu ", "andi ", "ori ", "xori ", "lui ", "", "", "", "", "",
+                    "", "", "", "", "", "", "", "", "", "", "", "lb ", "lh" , "lwl ", "lw ", "lbu ", "lhu ", "lwr ", "", "sb ", "sh ", "swl ", "sw ", "", "", "swr ", 
+                    "cache ", "ll ", "lwc1 ", "", "", "", "lwc2 ", "pref ", "", "ldc1 ", "ldc2 ", "", "sc", "swc1 ", "swc2 ", "", "", "sdc1 ", "sdc2 "]
 
 register_list = ["$zero", "$at", "$v0", "$v1", "$a0", "$a1", "$a2", "$a3", "$t0", "$t1", "$t2", "$t3", "$t4", "$t5", "$t6", "$t7"
                 , "$s0", "$s1", "$s2", "$s3", "$s4", "$s5", "$s6", "$s7", "$t8", "$t9", "$k0", "$k1", "$gp", "$sp", "$fp", "$ra"]
@@ -78,6 +115,9 @@ if (lista_bin[0] == "000000"):
 
 elif((lista_bin[0] == "000010") or (lista_bin[0] == "000011")):
     Jtipe_separator()
+    
+    
 
 else:
     Itipe_separator()
+    print("\nInstruccion:", Itipe_Func(), "\n")
