@@ -1,10 +1,4 @@
 
-
-
-
-import re
-
-
 def Rtipe_separator():
 
     lista_bin.append(binstr[0:5])
@@ -57,29 +51,35 @@ def Itipe_Func():
     inst = inst + list_JandI_funct[int(lista_bin[0], 2)]
     
     if (inst == "lui "):
-        
         inst = inst + register_list[int(lista_bin[2], 2)] + ", " + hex(int(lista_bin[3], 2))
         
-        
-        # ll lw lbu lhu sb sc sh sw lwc1 ldc1 swc1 sdc1
     elif (list_JandI_funct.index(inst) > 31):
-        
         inst = inst + register_list[int(lista_bin[2], 2)] + ", " + hex(int(lista_bin[3], 2)) + "(" + register_list[int(lista_bin[1], 2)] + ")"
         
     elif ((list_JandI_funct.index(inst) > 7) and (list_JandI_funct.index(inst) < 15)):
-        
         inst = inst + register_list[int(lista_bin[2], 2)] + ", " + register_list[int(lista_bin[1], 2)] + ", " + hex(int(lista_bin[3], 2))
         
-    # elif ((list_JandI_funct.index(inst) > 3) and (list_JandI_funct.index(inst) < 8)): REQUERIMOS BTA 
-        
-        #inst = inst + register_list[int(lista_bin[2], 2)] + ", " + register_list[int(lista_bin[1], 2)] + ", " + hex(int(lista_bin[3], 2))
+    elif ((list_JandI_funct.index(inst) > 3) and (list_JandI_funct.index(inst) < 8)):
+        inst = inst + register_list[int(lista_bin[1], 2)] + ", " + register_list[int(lista_bin[2], 2)] + ", LABEL"
         
     return inst
-        
-        
-    
 
-inicial = "0xad49fff9"
+def Jtipe_Func():
+    
+    inst = ""    
+    inst = inst + list_JandI_funct[int(lista_bin[0], 2)] + ", LABEL"
+            
+    return inst 
+
+def MFC0tipe_Func():
+    
+    inst = ""    
+    inst = inst + "mfc0 " + register_list[int(lista_bin[3], 2)] + ", " + register_list[int(lista_bin[1], 2)]
+            
+    return inst 
+
+
+inicial = "0x11280006"
 
 ## 111000
 lista_bin = []
@@ -112,12 +112,14 @@ if (lista_bin[0] == "000000"):
     Rtipe_separator()
     print("\nInstruccion:", Rtipe_Func(), "\n")
 
-
 elif((lista_bin[0] == "000010") or (lista_bin[0] == "000011")):
     Jtipe_separator()
+    print("\nInstruccion:", Jtipe_Func(), "\n")
     
+elif((lista_bin[0] == "010000")):
+    Rtipe_separator()
+    print("\nInstruccion:", MFC0tipe_Func(), "\n")
     
-
 else:
     Itipe_separator()
     print("\nInstruccion:", Itipe_Func(), "\n")
