@@ -5,8 +5,7 @@ def Rtipe_separator():
     lista_bin.append(binstr[5:10])
     lista_bin.append(binstr[10:15])
     lista_bin.append(binstr[15:20])
-    lista_bin.append(binstr[20:26])
-    
+    lista_bin.append(binstr[20:26]) 
 
 def Itipe_separator():
 
@@ -78,10 +77,14 @@ def MFC0tipe_Func():
             
     return inst 
 
+  
 
 inicial = "0x11280006"
+salida = ""
 
-## 111000
+print ("\nInicial:", inicial)
+inicial = inicial[2:]
+
 lista_bin = []
 
 list_Rfunct = ["sll ", "", "srl ", "sra ", "sllv ", "", "srlv ", "srav ", "jr ", "jalr ", "movz ", "movn ", "syscall ", "break ", "", "sync ", "mfhi ", "mthi ",
@@ -94,32 +97,38 @@ list_JandI_funct = ["", "", "j ", "jal ", "beq ", "bne ", "blez ", "bgtz ", "add
 
 register_list = ["$zero", "$at", "$v0", "$v1", "$a0", "$a1", "$a2", "$a3", "$t0", "$t1", "$t2", "$t3", "$t4", "$t5", "$t6", "$t7"
                 , "$s0", "$s1", "$s2", "$s3", "$s4", "$s5", "$s6", "$s7", "$t8", "$t9", "$k0", "$k1", "$gp", "$sp", "$fp", "$ra"]
+
 binstr = ""
 
-print ("\nInicial:", inicial)
-inicial = inicial[2:]
 
 for i in range (0,4):
 
     resultado = str("{0:08b}".format(int(inicial[0:2], 16)))
     binstr = binstr + resultado
-    inicial = inicial[2:]
+    inicial = inicial[2:] 
+
 
 lista_bin.append(binstr[0:6])
 binstr = binstr[6:]
 
+print("lista_bin: ", lista_bin)
+
 if (lista_bin[0] == "000000"):
     Rtipe_separator()
-    print("\nInstruccion:", Rtipe_Func(), "\n")
+    salida = Rtipe_Func()
 
 elif((lista_bin[0] == "000010") or (lista_bin[0] == "000011")):
     Jtipe_separator()
-    print("\nInstruccion:", Jtipe_Func(), "\n")
-    
+    salida = Jtipe_Func()
+          
 elif((lista_bin[0] == "010000")):
     Rtipe_separator()
-    print("\nInstruccion:", MFC0tipe_Func(), "\n")
-    
+    salida = MFC0tipe_Func()
+          
 else:
     Itipe_separator()
-    print("\nInstruccion:", Itipe_Func(), "\n")
+    salida = Itipe_Func()
+    
+print("\nInstruccion:", salida, "\n")
+
+print("Programa finalizado con Exito\n")
