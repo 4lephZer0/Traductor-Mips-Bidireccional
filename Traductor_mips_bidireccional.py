@@ -76,16 +76,13 @@ def MFC0tipe_Func():
     inst = inst + "mfc0 " + register_list[int(lista_bin[3], 2)] + ", " + register_list[int(lista_bin[1], 2)]
             
     return inst 
+ 
 
-  
-
-inicial = "0x11280006"
+inicial = "add $t1, $t2, $t3"
 salida = ""
 
-print ("\nInicial:", inicial)
-inicial = inicial[2:]
-
 lista_bin = []
+lista_inst = []
 
 list_Rfunct = ["sll ", "", "srl ", "sra ", "sllv ", "", "srlv ", "srav ", "jr ", "jalr ", "movz ", "movn ", "syscall ", "break ", "", "sync ", "mfhi ", "mthi ",
                "mflo ", "mtlo ", "", "", "", "", "mult ", "multu ", "div ", "divu ", "", "", "", "", "add ", "addu ", "sub ", "subu ", "and ", "or ", "xor ", "nor "
@@ -100,35 +97,50 @@ register_list = ["$zero", "$at", "$v0", "$v1", "$a0", "$a1", "$a2", "$a3", "$t0"
 
 binstr = ""
 
+caso = 1
 
-for i in range (0,4):
-
-    resultado = str("{0:08b}".format(int(inicial[0:2], 16)))
-    binstr = binstr + resultado
-    inicial = inicial[2:] 
-
-
-lista_bin.append(binstr[0:6])
-binstr = binstr[6:]
-
-print("lista_bin: ", lista_bin)
-
-if (lista_bin[0] == "000000"):
-    Rtipe_separator()
-    salida = Rtipe_Func()
-
-elif((lista_bin[0] == "000010") or (lista_bin[0] == "000011")):
-    Jtipe_separator()
-    salida = Jtipe_Func()
-          
-elif((lista_bin[0] == "010000")):
-    Rtipe_separator()
-    salida = MFC0tipe_Func()
-          
-else:
-    Itipe_separator()
-    salida = Itipe_Func()
+if (caso == 0):
     
-print("\nInstruccion:", salida, "\n")
+    print("\nInicial:", inicial)
+    inicial = inicial[2:]
+
+    for i in range (0,4):
+
+        resultado = str("{0:08b}".format(int(inicial[0:2], 16)))
+        binstr = binstr + resultado
+        inicial = inicial[2:] 
+
+    lista_bin.append(binstr[0:6])
+    binstr = binstr[6:]
+
+    print("lista_bin: ", lista_bin)
+
+    if (lista_bin[0] == "000000"):
+        Rtipe_separator()
+        salida = Rtipe_Func()
+
+    elif((lista_bin[0] == "000010") or (lista_bin[0] == "000011")):
+        Jtipe_separator()
+        salida = Jtipe_Func()
+            
+    elif((lista_bin[0] == "010000")):
+        Rtipe_separator()
+        salida = MFC0tipe_Func()
+            
+    else:
+        Itipe_separator()
+        salida = Itipe_Func()
+        
+    print("\nInstruccion:", salida, "\n")
+    
+if (caso == 1):
+    
+    lista_inst = inicial.split(" ")
+    
+    for i in range (0,len(lista_inst)):
+        
+        lista_inst[i] = lista_inst[i].replace(",", "")
+    
+    print(lista_inst)
 
 print("Programa finalizado con Exito\n")
