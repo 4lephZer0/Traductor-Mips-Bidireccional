@@ -42,10 +42,10 @@ def Rtipe_Func():
 def Itipe_Func():
     
     inst = ""    
-    inst = inst + list_JandI_funct[int(list_bin[0], 2)] + " "
+    inst = inst + list_JandI_funct[int(list_bin[0], 2)]
     
     if (inst == "lui"):
-        inst = inst + register_list[int(list_bin[2], 2)] + ", " + hex(int(list_bin[3], 2))
+        inst = inst + " " + register_list[int(list_bin[2], 2)] + ", " + hex(int(list_bin[3], 2))
         
     elif (list_JandI_funct.index(inst) > 31):
         inst = inst + register_list[int(list_bin[2], 2)] + ", " + hex(int(list_bin[3], 2)) + "(" + register_list[int(list_bin[1], 2)] + ")"
@@ -76,16 +76,13 @@ def RfunctoHex():
     
     out_hex = ""
     out_hex = out_hex + "000000"
-
     
     if (list_inst[0] == "jr"):
         out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[1])))[2:], 5)
         out_hex = out_hex + "000000000000000"
         out_hex = out_hex + ZeroExtend(str(bin(list_Rfunct.index(list_inst[0])))[2:], 6)
         
-        
-    elif ((list_inst[0] == "sll") or (list_inst[0] == "srl ") or (list_inst[0] == "sra ")):
-        
+    elif ((list_inst[0] == "sll") or (list_inst[0] == "srl") or (list_inst[0] == "sra")):
         out_hex = out_hex + "00000"
         out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[1])))[2:], 5)
         out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[2])))[2:], 5)
@@ -93,33 +90,87 @@ def RfunctoHex():
         out_hex = out_hex + ZeroExtend(str(bin(list_Rfunct.index(list_inst[0])))[2:], 6)
         
     elif ((list_inst[0] == "mfhi") or (list_inst[0] == "mflo")):
-        
         out_hex = out_hex + "0000000000"
         out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[1])))[2:], 5)
         out_hex = out_hex + "00000"
         out_hex = out_hex + ZeroExtend(str(bin(list_Rfunct.index(list_inst[0])))[2:], 6)
         
         
-    elif ((list_inst[0] == "div") or (list_inst[0] == "divu") or (list_inst[0] == "mult") or (list_inst[0] == "multu")):
-        
+    elif ((list_inst[0] == "div") or (list_inst[0] == "divu") or (list_inst[0] == "mult") or (list_inst[0] == "multu")):     
         out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[1])))[2:], 5)
         out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[2])))[2:], 5)
         out_hex = out_hex + "0000000000"
         out_hex = out_hex + ZeroExtend(str(bin(list_Rfunct.index(list_inst[0])))[2:], 6)
         
     else:
-        
         out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[2])))[2:], 5)
         out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[3])))[2:], 5)
         out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[1])))[2:], 5)
         out_hex = out_hex + "00000"
         out_hex = out_hex + ZeroExtend(str(bin(list_Rfunct.index(list_inst[0])))[2:], 6)
     
-    List_aux_creator(out_hex, (len(out_hex)//4))  
+    List_aux_creator(out_hex, (len(out_hex)//4))
     out_hex = ""
     
     for i in range(0, len(list_aux)):
+        out_hex = out_hex + list_aux[i]
         
+    out_hex = "0x" + out_hex
+    
+    return out_hex
+
+def JfunctoHex():
+    print("\nPara instrucciones de salto se requiere el JTA.")
+    return ""
+
+def IfunctoHex():
+    
+    out_hex = ""
+    out_hex = out_hex + ZeroExtend(str(bin(list_JandI_funct.index(list_inst[0])))[2:], 6)
+    
+    if (list_inst[0] == "lui"):
+        out_hex = out_hex + "00000"
+        out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[1])))[2:], 5)
+        out_hex = out_hex + SignExtend(str(bin(int(list_inst[2]))), 16)
+    
+    elif (list_JandI_funct.index(list_inst[0]) > 31): 
+        out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[2][len(list_inst[2])-4:len(list_inst[2])-1])))[2:], 5)
+        out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[1])))[2:], 5)
+        out_hex = out_hex + SignExtend(str(bin(int(list_inst[2][:len(list_inst[2])-5]))), 16)
+        
+    elif ((list_JandI_funct.index(list_inst[0]) > 7) and (list_JandI_funct.index(list_inst[0]) < 12)):
+        out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[2])))[2:], 5)
+        out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[1])))[2:], 5)
+        out_hex = out_hex + SignExtend(str(bin(int(list_inst[3]))), 16)
+        
+    elif ((list_JandI_funct.index(list_inst[0]) > 11) and (list_JandI_funct.index(list_inst[0]) < 15)):
+        out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[2])))[2:], 5)
+        out_hex = out_hex + ZeroExtend(str(bin(register_list.index(list_inst[1])))[2:], 5)
+        out_hex = out_hex + ZeroExtend(str(bin(int(list_inst[3]))), 16)
+            
+    elif ((list_JandI_funct.index(list_inst[3]) > 3) and (list_JandI_funct.index(list_inst[3]) < 8)):
+        print("Se requiere el BTA para calcular las instrucciones de Branch")
+        out_hex = ""
+    
+    List_aux_creator(out_hex, (len(out_hex)//4))
+    out_hex = ""
+    
+    for i in range(0, len(list_aux)):
+        out_hex = out_hex + list_aux[i]
+        
+    out_hex = "0x" + out_hex
+    
+    return out_hex
+
+def Mfc0functoHex():
+    
+    out_hex = ""
+    out_hex = "010000" + ZeroExtend(str(bin(register_list.index(list_inst[2])))[2:], 5) + ZeroExtend(str(bin(register_list.index(list_inst[1])))[2:], 5)
+    
+    List_aux_creator(out_hex, (len(out_hex)//4))
+    out_hex = ""
+    
+    for i in range(0, len(list_aux)):
         out_hex = out_hex + list_aux[i]
         
     out_hex = "0x" + out_hex
@@ -133,6 +184,49 @@ def ZeroExtend(stringBin, bitsExtends):
         stringBin = "0" + stringBin
         
     return stringBin
+
+def SignExtend(stringBin, bitsExtends):
+    
+    stringAux = ""
+    
+    if (stringBin[0] == "-"):
+        
+        stringBin = stringBin[3:]
+        
+        oneCounter = 0
+        i = 0
+        while (i < len(stringBin)):
+            
+            if (oneCounter == 1):
+                
+                if (stringBin[len(stringBin)-1-i] == "1"):
+                    stringAux = "0" + stringAux
+                else:
+                    stringAux = "1" + stringAux
+            
+            elif (oneCounter == 0):
+                if (stringBin[len(stringBin)-1-i] == "1"):
+                    stringAux = "1" + stringAux
+                    oneCounter += 1
+                    
+                elif (stringBin[len(stringBin)-1-i] == "0"):
+                    stringAux = "0" + stringAux
+        
+            i += 1
+            
+        while (len(stringAux) < bitsExtends):
+            stringAux = "1" + stringAux
+        
+        stringBin = stringAux
+            
+    if (stringBin[0] == "0"):
+        
+        stringBin = stringBin[2:]
+        
+        while (len(stringBin) < bitsExtends):
+            stringBin = "0" + stringBin
+        
+    return stringBin
     
 def List_aux_creator(out_hex, len_out_hex):
     
@@ -144,7 +238,7 @@ def List_aux_creator(out_hex, len_out_hex):
      
     
 
-inicial = "add $t0, $s0, $s1"
+inicial = "sw $s1, 8($t1)"
 final_hex = ""
 
 list_bin = []
@@ -204,13 +298,21 @@ if (caso == 1):
     list_inst = inicial.split(" ")
     
     for i in range (0,len(list_inst)):
-        
         list_inst[i] = list_inst[i].replace(",", "")
     
     if(list_inst[0] in list_Rfunct):
-        
         final_hex = RfunctoHex()
-        print("\nFinal:", final_hex, "\n")
+        
+    elif((list_inst[0] == "j") or (list_inst[0] == "jal")):
+        final_hex = JfunctoHex()  
+        
+    if(list_inst[0] == "mfc0"):
+        final_hex = Mfc0functoHex()
+        
+    else:
+        final_hex = IfunctoHex()  
+        
+    print("\nFinal:", final_hex, "\n")
     
 
 print("Programa finalizado con Exito\n")
